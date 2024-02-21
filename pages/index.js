@@ -1,67 +1,64 @@
-import Head from "next/head";
-import styles from "../styles/Home.module.css";
+import React, { useState } from 'react';
+import Papa from 'papaparse';
+import FileUpload from '../components/FileUpload';
+import SiteList from '../components/SiteList';
 
-export default function Home() {
+const Index = () => {
+  const [sites, setSites] = useState([]);
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    Papa.parse(file, {
+      header: true,
+      complete: handleData
+    });
+  };
+
+  const handleData = (results) => {
+    const sitesData = results.data;
+
+    const sitesWithContract1 = sitesData.filter(site => site.CONTRATO === '1');
+    const sitesWithContract2 = sitesData.filter(site => site.CONTRATO === '2');
+
+    const selectedSites = [];
+
+    sitesWithContract2.forEach(site2 => {
+      let minDistance = Number.MAX_VALUE;
+      sitesWithContract1.forEach(site1 => {
+        const lat1 = parseFloat(site1.LATITUD);
+        const lon1 = parseFloat(site1.LONGITUD);
+        const lat2 = parseFloat(site2.LATITUD);
+        const lon2 = parseFloat(site2.LONGITUD);
+
+        const R = 6371; // Radio de la Tierra en km
+        const dLat = lat2 - lat1;
+        const dLon = lon2 - lon1;
+
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+          Math.cos(lat1) * Math.cos(lat2) *
+          Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const distance = R * c;
+
+        if (distance < minDistance) {
+          minDistance = distance;
+        }
+      });
+
+      selectedSites.push({ ...site2, DISTANCIA_MIN: minDistance });
+    });
+
+    selectedSites.sort((a, b) => a.DISTANCIA_MIN - b.DISTANCIA_MIN);
+    setSites(selectedSites.slice(0, 1200));
+  };
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js</a> on Docker!
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{" "}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
+    <div>
+      <h1>Aplicación de selección de sitios</h1>
+      <FileUpload handleFileChange={handleFileChange} />
+      <SiteList sites={sites} />
     </div>
   );
-}
+};
+
+export default Index;
