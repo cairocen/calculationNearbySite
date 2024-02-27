@@ -9,6 +9,8 @@ const SiteList = ({ sites }) => {
                         <th>DEPARTAMENTO</th>
                         <th>MUNICIPIO</th>
                         <th>ALDEA</th>
+                        <th>LATITUD</th>
+                        <th>LONGITUD</th>
                         <th>CONTRATO</th>
                         <th>DISTANCIA (km)</th>
                     </tr>
@@ -20,6 +22,8 @@ const SiteList = ({ sites }) => {
                             <td>{site.DEPARTAMENTO}</td>
                             <td>{site.MUNICIPIO}</td>
                             <td>{site.ALDEA}</td>
+                            <td>{site.LATITUD}</td>
+                            <td>{site.LONGITUD}</td>
                             <td>{site.CONTRATO}</td>
                             <td>{site.DISTANCIA_MIN} km</td>
                         </tr>
