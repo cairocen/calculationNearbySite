@@ -1,3 +1,9 @@
+# Define headers on your csv Files
+Your csv file, must be contain your coordinates in radians, latitude and longitude, and other fields of your interest. For example: id, siteName, latitude, longitude, etc, other headers.
+
+# Load csv File prepared on previus step
+Load csv file, wait for a few moments y get the results!
+
 # With Docker
 
 This examples shows how to use Docker with Next.js based on the [deployment documentation](https://nextjs.org/docs/deployment#docker-image). Additionally, it contains instructions for deploying to Google Cloud Run. However, you can use any container-based deployment host.
