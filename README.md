@@ -1,4 +1,4 @@
-# Define headers on your csv Files
+# Define headers on your csv File
 Your csv file, must be contain your coordinates in radians, latitude and longitude, and other fields of your interest. For example: id, siteName, latitude, longitude, etc, other headers.
 
 # Load csv File prepared on previus step
